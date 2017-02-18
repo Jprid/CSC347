@@ -1,0 +1,73 @@
+
+# Scope, functions, and storage mgmt
+---
+### Classes of variables:
+#### *Local Variables*:
+Stored on the stack in the activation record associated with the block
+
+#### Parameters (of function or procedure blocks)
+
+Stored in activation record associated with the block
+
+#### Global Variables:
+
+* declared in enclosing block-->therefore must be accessed from activation
+* record placed on the run-time stack before the current activation record.
+---
+### Simplified Machine Model:
+
+#### figure 7.1 uses Simplified Machine Model (SMM)
+	[-] separates code from data memory
+	[-] when program enters new black, an AR (Activation Record)
+        with space for the local variables declared in the block is
+        added to the Run time stack and the environment pointer is set
+        to point to the new activation record
+	[-] when program exits block, the activation record is removed from the stack
+      and the envptr is reset to its prev. spot
+	[-] higher-order fxn can cause stack-discipline (stack ordering prop.) to fail
+
+---
+__Reference Implementation:__
+
+* implementation of lang. intended to define
+the behavior of the lang
+
+### IN-Line Blocks
+
+* In-line block  : block that is not body of fxn or procedure. Are Simple
+
+### Activation Records and Local Variables
+
+    [-] when pgrm enters in-line block --> allocates space for variables in
+        block
+    [-] done by allocating set of mem. locations
+
+* example: (see code block below)
+![stack growing info](/stackgrowinginfo.png)
+
+#### Code:
+      {            // 1. program enters outer, initial enclosing block:
+        int x=0;   // AR with space for (block's vars) x pushed onto stack
+        int y=x+1; // y pushed onto stack in same AR
+        {          // 2. program enters inner block:
+          int z=(x+y)*(x-y);
+          // once  value of z is set, it's AR is popped off the stack
+          // new activation record w/ space for z created, pushed onto stack
+          // AR with x & y popped off stack
+          };
+      };
+---
+      {
+        int z = (x + y) * (x - y);
+      }
+
+---
+
+#### Scope & Lifetime:
+
+##### Code (ML):
+
+      // each fxn declaration == one block
+      fun f(x) = x+1;
+      fun g(y) = f(y) +2;
+      g(3);
