@@ -64,9 +64,44 @@ the behavior of the lang
 
 #### Scope & Lifetime:
 
-##### Code (ML):
+#### Global Variables and Control Links
 
-      // each fxn declaration == one block
-      fun f(x) = x+1;
-      fun g(y) = f(y) +2;
-      g(3);
+__Control Link (CL):__ pushing and popping AR store ptr to prev. AR. Used when
+ control is returned to the prev. block's instructions.
+
+AKA __Dynamic Link:__ because it describes the dynamic sequence of fxn calls
+made by the program
+
+![Control Link](/controllink.PNG)
+##### Control link update
+__*AR pushed to stack*__
+__[-]__ CL set to envptr's prev; envptr set to current AR
+__*AR popped from stack*__
+[-] envptr reset by following control link from AR (being popped off)
+##### Example run-time stack:
+> __CODE:__
+>
+		{
+			int x = 0;
+			int y = x + 1;
+				{
+					int z = (x + y) * (x-y);
+				};
+		};
+		// see image below for visual representation.
+> __IMAGE:__
+![Ex. RTS](/RTS.PNG)
+
+##### DESC. (refer to above image)
+1. program evaluates x+y, and x-y:
+	* __loading x:__ code follows envptr to head of current AR, where ctrl_link is
+	* __Location of x__ = ctrl_link + 1 // ctrl_link stores location of prevblock
+	* __Loading y:__ code follows envptr to head of current AR, where ctrl_link is
+	* __Location of y__ = ctrl_link + 2
+
+#### SUM:
+> the compiler can determine the number of control links to follow and the relative location of the variable within the correct block from the source code. In particular, it isn't necessary to store variable names in activation records.
+
+### Fxns and Procedures:
+
+![Fxn Activation Record](/FxnAr.PNG)
