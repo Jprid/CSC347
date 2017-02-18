@@ -1,5 +1,5 @@
 #CSC347 Repo
-test repo for notes and midterm review
+Repo for notes and midterm review
 
 #Scala got 99 problems but I still don't know when to flatmap
 Scala99.scala contains solutions to some of the Scala99 problems
