@@ -1,0 +1,32 @@
+
+# Scope, functions, and storage mgmt
+---
+ * Classes of variables:
+	* local variables:
+		* stored on the stack in the activation record associated with the block
+
+  * parameters (of function or procedure blocks)
+  	* stored in activation record associated with the block
+
+  * global variables:
+  	* declared in enclosing block-->therefore must be accessed from activation
+    * record placed on the run-time stack before the current activation record.
+---
+* Simplified Machine Model:
+	* figure 7.1 uses Simplified Machine Model (SMM)
+		* separates code from data memory
+		* when program enters new black, an AR (Activation Record) with space for the local variables declared in the block is added to the Run time stack and the environment pointer is set to point to the new activation record
+		* when program exits block, the activation record is removed from the stack and the envptr is reset to its prev. spot
+		* higher-order fxn can cause stack-discipline (stack ordering prop.) to fail
+
+---
+* Reference Implementation
+
+## IN-Line Blocks
+
+* In-line block  : block that is not body of fxn or procedure. Are Simple
+
+### Activation Records and Local Variables
+
+* when pgrm enters in-line block --> allocates space for variables in block
+> done by allocating set of mem. locations
