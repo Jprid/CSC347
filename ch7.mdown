@@ -1,4 +1,3 @@
-
 # Scope, functions, and storage mgmt
 ---
 ### Classes of variables:
@@ -43,7 +42,7 @@ the behavior of the lang
     [-] done by allocating set of mem. locations
 
 * example: (see code block below)
-![stack growing info](/stackgrowinginfo.png)
+![stack growing info](/stackgrowinginfo.PNG)
 
 #### Code:
       {            // 1. program enters outer, initial enclosing block:
