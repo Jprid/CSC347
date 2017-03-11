@@ -1,0 +1,101 @@
+# Concepts of Programming Languages Final Review
+
+### (Java) Dynamic Dispatch & Covariant Subtyping:
+
+* #### Q: what is printed when this (java) program runs?
+
+  ```Java
+  interface I {
+    void f ();
+  }
+
+  class A implements I {
+    public void f () {
+      System.out.println ("A");
+    }
+  }
+
+  class B extends A {
+    public void f () {
+      System.out.println ("B");
+    }
+  }
+
+  public class Dispatch1 {
+    public static void main (String[] args) {
+      I[] arr1 = new I[] { new A (), new B () };
+      A[] arr2 = new A[] { new A (), new B () };
+      A[] arr3 = new B[] { new B (), new B () };
+
+      for (int n = 0; n < arr1.length; n++) {
+        arr1[n].f ();
+        arr1[n] = new A ();
+      }
+      for(int n = 0; n < arr2.length; n++) {
+        arr2[n].f ();
+        arr2[n] = new A ();
+      }
+      for(int n = 0; n < arr3.length; n++) {
+        arr3[n].f ();
+        arr3[n] = new A ();
+      }
+    }
+  }
+  ```
+  ---
+
+  ---
+
+  ---
+
+  ---
+
+  ---
+
+  ---
+
+  ---
+
+  ---
+
+* #### Answer:
+  * A
+  * B
+  * A
+  * B
+  * B
+  * Exception in thread "main" java.lang.ArrayStoreException: A
+    * at Dispatch1.main(Dispatch1.java:35)
+    * (which is) arr3[n] = new A ();
+      * arr3's dynamic type is B[] but it's static type is A[]
+      * therefore arr3 can take in an A value (caused by new A())
+      * however, because arr3 is dynamically an array of Bs, it cannot take in an A value and so throws an ArrayStoreException
+
+## 3. Subtyping:
+
+* #### 3.1 Q: Is it true that subtyping is a symmetric relation?
+  * #### I.e., if Y<:X then X<:Y. if Y is a subclass of X is X a subclass of Y?
+  * #### If you answer no, give an example Java or Scala program that proves your point (it should fail to compile).
+
+* #### 3.1 Answer:
+  ```Java
+  class C {
+		void f () {System.out.println("C.f()");}
+	}
+  class D extends C{
+		void f () {System.out.println("D.f()");}
+	}
+
+  public class Symmetric2{
+	 public static void main (String[] args){
+     C x = new D();
+		 D y = new C(); /* fails to compile because subtyping is not a symmetric relation */
+	 }
+  }
+  ```
+---
+* #### 3.2 Transitivity Q: Suppose W<:X, X<:Y, and List[Y]<:Z. Is it the case that List[W]<:Z?
+* #### 3.2 Answer: Yes (not really sure)
+* #### 3.3 Downcasting
+  * #### Q:
+* #### 3.3 Answer:
