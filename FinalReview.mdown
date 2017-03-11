@@ -1,5 +1,407 @@
 # Concepts of Programming Languages Final Review
 
+#### [5 Q] Closures (nested fxns and objects) + Scala/Java conversion to classes:
+
+#### [3 Q] Dynamic Dispatch
+
+#### [2 Q] Scala functions and map
+
+#### [4 Q] Parameter passing (L/R values + CBV + CBR):
+
+```C
+// (C) LVALUES:
+int x = 5;
+int y = 6;
+int *p = &x;
+int *q = &y;
+int **r = &p;
+r = &q;
+q = p;
+**r = 7;
+
+// requires r-mode evaluation, but still L valueS
+arr[n + 2] = 7;
+```
+
+```Java
+// (Java/Scala) Also L-values
+obj.f1 = 7
+obj.m1 ().f1[n + 2].m2 ().f2 = 7
+
+```
+
+  * #### L-value or not:
+  * Is x++ an l-value in C? The context is:
+
+  ```C
+  void f (int x) {
+    ...
+  }
+  ```
+
+  * No, (see below)
+
+  ```C
+  void f (int x) {
+    x ++ = 2;
+  }
+  int main{
+    f(3);
+  }
+  /*test.c: In function ‘f’:*/
+  /*test.c:22:8: error: lvalue required as left operand of assignment*/
+  /*x ++ = 2;*/
+  ```
+
+Q: Is arr[x++] an l-value in C? The context is:
+
+  ```C
+  void f (int x) {
+    int arr[] = { 5, 6, 7, 8, 9, 10, 11 };
+    ...
+  }
+  ```
+
+A: yes (See below)
+
+  ```C
+  void f (int x) {
+    int arr[] = {0,0,3,4};
+    int z = arr[x++];
+    printf("%d \n", z);
+  //   s.p = &(s.y);
+  }
+  int main () {
+      f(1);
+  }
+  ```
+
+Q: Is f ().x an l-value in C? The context is:
+
+  ```C
+  struct S {
+    int x;
+    int y;
+  };
+
+  struct S f () {
+    struct S s;
+    s.x = 5;
+    s.y = 6;
+    return s;  // returns a copy of the "struct S", i.e., copies the two int members back
+  }
+
+  void g () {
+    ...
+  }
+  ```
+
+A: No (see below)
+
+  ```C
+  struct S {
+      int x;
+      int y;
+    };
+    struct S f () {
+      struct S s;
+      s.x = 5;
+      s.y = 6;
+      return s;  // returns a copy of the "struct S", i.e., copies the two int members back
+    }
+    void g () {
+      f().x = 3;
+    }
+  int main () {
+      g();
+      /*test.c: In function ‘g’:
+      test.c:16:11: error: lvalue required as left operand of assignment
+      f().x = 3;*/
+  }
+  ```
+
+Q: Is t.x an l-value in C? The context is:
+
+  ```C
+  struct S {
+    int x;
+    int y;
+  };
+
+  struct S f () {
+    struct S s;
+    s.x = 5;
+    s.y = 6;
+    return s;  // returns a copy of the "struct S", i.e., copies the two int members back
+  }
+
+  void g () {
+    struct S t = f ();
+    ...
+  }
+  ```
+
+A: Yes (see below)
+
+  ```C
+  struct S {
+      int x;
+      int y;
+    };
+
+    struct S f () {
+      struct S s;
+      s.x = 5;
+      s.y = 6;
+      return s;  // returns a copy of the "struct S", i.e., copies the two int members back
+    }
+
+    void g () {
+      struct S t = f ();
+      t.x = 3;
+      printf("%d \n", t.x);
+    }
+  int main () {
+      g();
+      // runs without error
+      // prints out "3"
+  }```
+
+
+
+Q: Is f ()->x an l-value in C? Recall that this means (*(f())).x, i.e., call f, dereference the pointer, then access the x member of the struct. The context is:
+
+  ```C
+  #include <stdlib.h>
+  struct S {
+    int x;
+    int y;
+  };
+  struct S *f () {
+    struct S *p = (struct S *) malloc (sizeof (struct S));
+    p->x = 5;   // recall that p->x is just shorthand for (*p).x
+    p->y = 6;
+    return p;  // returns a copy of the pointer, i.e., copies just a pointer back
+  }
+  void g () {
+    ...
+  }
+  ```
+
+A: Yes, see below
+
+```C
+#include <stdlib.h>
+struct S {
+    int x;
+    int y;
+  };
+  struct S *f () {
+    struct S *p = (struct S *) malloc (sizeof (struct S));
+    p->x = 5;   // recall that p->x is just shorthand for (*p).x
+    p->y = 6;
+    return p;  // returns a copy of the pointer, i.e., copies just a pointer back
+  }
+  void g () {
+    f()->x = 7; /* // is able to assign to f()->x (however, this assignment has no effect)*/
+    printf("%d \n", f()->x);
+  }
+int main () {
+    g();
+}```
+
+
+Q: Is arr[x++] an l-value in Java? The context is:
+
+  ```Java
+  class LValue6 {
+    static void f (int x) {
+      int[] arr = { 5, 6, 7, 8, 9, 10, 11 };
+      ...
+    }
+  }
+  ```
+
+
+A: yes, see below:
+
+```Java
+class LValue06 {
+  static void f (int x) {
+    int[] arr = { 5, 6, 7, 8, 9, 10, 11 };
+    arr[x++] = 1;
+    for(int i = 0; i < arr.length ; i++){
+	    System.out.printf("%d => %d \n", i, arr[i]);
+    }
+  }
+  public static void main(String[] args){
+  	f(0);
+    /* OUTPUT:
+    0 => 1
+    1 => 6
+    2 => 7
+    3 => 8
+    4 => 9
+    5 => 10
+    6 => 11
+    */
+  }
+}
+```
+
+Q: Is list.get (x++) an l-value in Java? The context is:
+
+  ```Java
+  import java.util.ArrayList;
+  class LValue7 {
+    static void f (int x) {
+      ArrayList<Integer> list = new ArrayList<> ();
+      list.add (5);
+      list.add (6);
+      list.add (7);
+      list.add (8);
+      ...
+    }
+  }
+  ```
+
+A: No, see below
+
+```Java
+import java.util.ArrayList;
+class LValue7 {
+  static void f (int x) {
+    ArrayList<Integer> list = new ArrayList<> ();
+    list.add (5);
+    list.add (6);
+    list.add (7);
+    list.add (8);
+    list.get(x++) = 0;
+  }
+  public static void main(String[] args){
+  	f(0);
+  }
+}
+```
+
+
+Q: Is list.get (x++).x an l-value in Java? The context is:
+
+```Java
+import java.util.ArrayList;
+class C {
+  int x;
+  int y;
+  C (int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+class LValue8 {
+  static void f (int x) {
+    ArrayList<C> list = new ArrayList<> ();
+    list.add (new C (5, 5));
+    list.add (new C (6, 6));
+    list.add (new C (7, 7));
+    list.add (new C (8, 8));
+    ...
+  }
+}
+```
+
+A: No, see below:
+
+```Java
+import java.util.ArrayList;
+class C {
+  int x;
+  int y;
+  C (int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+class LValue8 {
+  static void f (int x) {
+    ArrayList<C> list = new ArrayList<> ();
+    list.add (new C (5, 5));
+    list.add (new C (6, 6));
+    list.add (new C (7, 7));
+    list.add (new C (8, 8));
+    list.get(x++).x = 0;
+    for(int i = 0; i < list.size() ; i++){
+      C tmp = list.get(i);
+      System.out.printf("%d => %d \n", i, tmp.x);
+    }
+  }
+  public static void main(String[] args){
+    f(0);
+  }
+}
+```
+
+### Argument Passing
+
+#### 4.1 CBV in C - Int: confirm that C uses call-by-value to pass int variables by writing a simple C program then running it.
+
+```C
+void f(int x){
+  x++;
+  printf("f().x == %d \n", x);
+}
+int main() {
+  int x = 0;
+  f(x);
+  printf("%d \n", x);
+}
+/*Output:*/
+/*f().x == 1 */
+/*0 */
+```
+
+#### 4.1 CBV in C - Int: Confirm that C uses call-by-value to pass int variables by writing a simple C program then running it.
+
+#### 4.2 CBV in C - Pointer: Confirm that C uses call-by-value to pass pointer variables by writing a simple C program then running it.
+
+#### 4.3 CBV in Java - Int: Confirm that Java uses call-by-value to pass int variables by writing a simple Java program then running it.
+
+#### 4.4 CBV in Java - Reference: Confirm that Java uses call-by-value to pass reference variables (meaning references to instances on the heap) by writing a simple Java program then running it.
+
+#### [6 Q] Scope
+
+Write a Scala expression alternates of type Stream[Boolean] that alternates between true and false (starting with true).
+Try the following expressions in the Scala REPL (after your definition of alternates).
+```Scala
+"the rain in spain".toList
+
+"the rain in spain".toList.zip (alternates)
+
+"the rain in Spain".toList.zip (alternates).filter ((p:(Char,Boolean)) => p match { case (c:Char,b:Boolean) => b })
+
+/* shorthand for the previous version */
+"the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }
+
+"the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }
+
+val evens = "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }.map (p => p._1)
+
+val odds = "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => !b }.map (p => p._1)
+
+evens.zip (odds)
+```
+7 Static and Dynamic Scope
+
+Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java.
+
+Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
+
+Feel free to post your solutions to Piazza.
+
+#### [2 Q] Use of Call Stack for storing args
+
+#### [2 Q] Subtyping (including lists and arrays)
+
+
 ### (Java) Dynamic Dispatch & Covariant Subtyping:
 
 * #### Q: what is printed when this (java) program runs?
@@ -8,25 +410,21 @@
   interface I {
     void f ();
   }
-
   class A implements I {
     public void f () {
       System.out.println ("A");
     }
   }
-
   class B extends A {
     public void f () {
       System.out.println ("B");
     }
   }
-
   public class Dispatch1 {
     public static void main (String[] args) {
       I[] arr1 = new I[] { new A (), new B () };
       A[] arr2 = new A[] { new A (), new B () };
       A[] arr3 = new B[] { new B (), new B () };
-
       for (int n = 0; n < arr1.length; n++) {
         arr1[n].f ();
         arr1[n] = new A ();
@@ -42,23 +440,8 @@
     }
   }
   ```
-  ---
 
-  ---
-
-  ---
-
-  ---
-
-  ---
-
-  ---
-
-  ---
-
-  ---
-
-* #### Answer:
+* #### A:
   * A
   * B
   * A
@@ -77,7 +460,7 @@
   * #### I.e., if Y<:X then X<:Y. if Y is a subclass of X is X a subclass of Y?
   * #### If you answer no, give an example Java or Scala program that proves your point (it should fail to compile).
 
-* #### 3.1 Answer:
+* #### 3.1 A:
   ```Java
   class C {
 		void f () {System.out.println("C.f()");}
@@ -88,14 +471,85 @@
 
   public class Symmetric2{
 	 public static void main (String[] args){
-     C x = new D();
-		 D y = new C(); /* fails to compile because subtyping is not a symmetric relation */
+        C x = new D();
+	    D y = new C();     /* fails to compile because subtyping is not a symmetric relation */
 	 }
   }
   ```
 ---
+
 * #### 3.2 Transitivity Q: Suppose W<:X, X<:Y, and List[Y]<:Z. Is it the case that List[W]<:Z?
-* #### 3.2 Answer: Yes (not really sure)
+
+* #### 3.2 A: Yes (not really sure)
+
 * #### 3.3 Downcasting
-  * #### Q:
-* #### 3.3 Answer:
+  * #### Q: Something is wrong with the method convert in the following Java program. Does it fail at compile time or at runtime? Verify your answer by compiling and (perhaps) running the program.
+  ```Java
+  public class Downcast {
+    static class A           { int x; }
+    static class B extends A { int y; }
+
+    static B convert (A p){
+      B result = (B) p;
+      return result;
+    }
+
+    public static void main (String[] args){
+      A r = new A();
+      r.x = 5;
+      B s = convert (r);
+      System.out.println(s);
+    }
+  }
+  ```
+* #### 3.3 A: runtime error --> A != B, therefore the attempted cast of p to B results in a type mismatch error.
+
+## Subtyping and variance in Scala
+
+* #### 4.1 Covariant Lists:
+  * #### Q: verify that the *List* type is covariant in Scala by entering the following Scala program into the Scala REPL
+
+  ```Scala
+  class B {
+    def f (x:Int) : Int             = 1
+  }
+
+  class C extends B {
+    override def f (x:Int) : Int    = 2
+    def g (arr:Array[String]) :Int  = 3
+  }
+
+  val xs1:List[B] = List (new B, new B)
+  val xs2:List[C] = List (new C, new C)
+  val xs3:List[B] = List (new B, new C)
+  val xs4:List[B] = xs2
+  xs4(1).f(0)
+  ```
+
+  * #### A:
+    *  #### Note: xs2 is a List of type C
+    *  #### Note: xs4 is a List of type B
+    *  #### because Lists are covariant in Scala, xs4 can take in C values
+
+* #### 4.2 Invariant Arrays:
+* #### Q: Verify that the Array type is invariant in Scala by entering the following Scala program into the Scala REPL.
+
+  ```Scala
+  class B {
+    def f (x:Int) : Int             = 1
+  }
+
+  class C extends B {
+    override def f (x:Int) : Int    = 2
+    def g (arr:Array[String]) : Int = 3
+  }
+
+  val xs1:Array[B] = Array (new B, new B)
+  val xs2:Array[C] = Array (new C, new C)
+  val xs3:Array[B] = Array (new B, new C)
+  val xs4:Array[B] = xs2
+  xs4 (0) = new B
+  xs2 (0).g ()
+  ```
+
+* #### A: val xs4:Array[B] = xs2 is illegal because B is not a subtype of C and arrays in Scala are invariant
