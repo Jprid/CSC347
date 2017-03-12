@@ -1,37 +1,44 @@
 # Concepts of Programming Languages Final Review
 
-#### [5 Q] Closures (nested fxns and objects) + Scala/Java conversion to classes:
 
-#### [3 Q] Dynamic Dispatch
+#### Topics on Final Exam:
 
-#### [2 Q] Scala functions and map
+##### [5 Q] Closures (nested fxns and objects) + Scala/Java conversion to classes:
 
-#### [4 Q] Parameter passing (L/R values + CBV + CBR):
+##### [3 Q] Dynamic Dispatch
 
-```C
-// (C) LVALUES:
-int x = 5;
-int y = 6;
-int *p = &x;
-int *q = &y;
-int **r = &p;
-r = &q;
-q = p;
-**r = 7;
+##### [2 Q] Scala functions and map
 
-// requires r-mode evaluation, but still L valueS
-arr[n + 2] = 7;
-```
+##### [4 Q] Parameter passing (L/R values + CBV + CBR):
 
-```Java
-// (Java/Scala) Also L-values
-obj.f1 = 7
-obj.m1 ().f1[n + 2].m2 ().f2 = 7
+##### [2 Q] Use of Call Stack for storing args
 
-```
+##### [2 Q] Subtyping (including lists and arrays)
 
-  * #### L-value or not:
-  * Is x++ an l-value in C? The context is:
+---
+
+#### L-Values:
+
+    // (C) LVALUES:
+    int x = 5;
+    int y = 6;
+    int *p = &x;
+    int *q = &y;
+    int **r = &p;
+    r = &q;
+    q = p;
+    **r = 7;
+
+    // requires r-mode evaluation, but still L valueS
+    arr[n + 2] = 7;
+
+    ```Java
+    // (Java/Scala) Also L-values
+    obj.f1 = 7
+    obj.m1 ().f1[n + 2].m2 ().f2 = 7
+    ```
+
+* #### Is x++ an l-value in C? The context is:
 
   ```C
   void f (int x) {
@@ -39,7 +46,7 @@ obj.m1 ().f1[n + 2].m2 ().f2 = 7
   }
   ```
 
-  * No, (see below)
+  * #### No, (see below)
 
   ```C
   void f (int x) {
@@ -53,7 +60,9 @@ obj.m1 ().f1[n + 2].m2 ().f2 = 7
   /*x ++ = 2;*/
   ```
 
-Q: Is arr[x++] an l-value in C? The context is:
+---
+
+* #### Q: Is arr[x++] an l-value in C? The context is:
 
   ```C
   void f (int x) {
@@ -62,7 +71,7 @@ Q: Is arr[x++] an l-value in C? The context is:
   }
   ```
 
-A: yes (See below)
+* #### A: yes (See below)
 
   ```C
   void f (int x) {
@@ -76,7 +85,9 @@ A: yes (See below)
   }
   ```
 
-Q: Is f ().x an l-value in C? The context is:
+---
+
+* #### Q: Is f ().x an l-value in C? The context is:
 
   ```C
   struct S {
@@ -96,7 +107,7 @@ Q: Is f ().x an l-value in C? The context is:
   }
   ```
 
-A: No (see below)
+* #### A: No (see below)
 
   ```C
   struct S {
@@ -119,8 +130,9 @@ A: No (see below)
       f().x = 3;*/
   }
   ```
+---
 
-Q: Is t.x an l-value in C? The context is:
+* #### Q: Is t.x an l-value in C? The context is:
 
   ```C
   struct S {
@@ -141,7 +153,7 @@ Q: Is t.x an l-value in C? The context is:
   }
   ```
 
-A: Yes (see below)
+* #### A: Yes (see below)
 
   ```C
   struct S {
@@ -165,11 +177,13 @@ A: Yes (see below)
       g();
       // runs without error
       // prints out "3"
-  }```
+  }
+  ```
+
+  ---
 
 
-
-Q: Is f ()->x an l-value in C? Recall that this means (*(f())).x, i.e., call f, dereference the pointer, then access the x member of the struct. The context is:
+* #### Q: Is f ()->x an l-value in C? Recall that this means (*(f())).x, i.e., call f, dereference the pointer, then access the x member of the struct. The context is:
 
   ```C
   #include <stdlib.h>
@@ -188,7 +202,7 @@ Q: Is f ()->x an l-value in C? Recall that this means (*(f())).x, i.e., call f, 
   }
   ```
 
-A: Yes, see below
+* #### A: Yes, see below
 
 ```C
 #include <stdlib.h>
@@ -208,10 +222,12 @@ struct S {
   }
 int main () {
     g();
-}```
+}
+```
 
+---
 
-Q: Is arr[x++] an l-value in Java? The context is:
+* #### Q: Is arr[x++] an l-value in Java? The context is:
 
   ```Java
   class LValue6 {
@@ -222,8 +238,7 @@ Q: Is arr[x++] an l-value in Java? The context is:
   }
   ```
 
-
-A: yes, see below:
+* #### A: yes, see below:
 
 ```Java
 class LValue06 {
@@ -249,7 +264,9 @@ class LValue06 {
 }
 ```
 
-Q: Is list.get (x++) an l-value in Java? The context is:
+---
+
+* #### Q: Is list.get (x++) an l-value in Java? The context is:
 
   ```Java
   import java.util.ArrayList;
@@ -265,7 +282,7 @@ Q: Is list.get (x++) an l-value in Java? The context is:
   }
   ```
 
-A: No, see below
+* #### A: No, see below
 
 ```Java
 import java.util.ArrayList;
@@ -280,126 +297,505 @@ class LValue7 {
   }
   public static void main(String[] args){
   	f(0);
+    /*ERROR
+    LValue7.java:10: error: unexpected type
+    list.get(x++) = 0;
+            ^
+    required: variable
+    found:    value
+    1 error*/
   }
 }
 ```
 
+---
 
-Q: Is list.get (x++).x an l-value in Java? The context is:
+* #### Q: Is list.get (x++).x an l-value in Java? The context is:
 
-```Java
-import java.util.ArrayList;
-class C {
-  int x;
-  int y;
-  C (int x, int y) {
-    this.x = x;
-    this.y = y;
-  }
-}
-class LValue8 {
-  static void f (int x) {
-    ArrayList<C> list = new ArrayList<> ();
-    list.add (new C (5, 5));
-    list.add (new C (6, 6));
-    list.add (new C (7, 7));
-    list.add (new C (8, 8));
-    ...
-  }
-}
-```
-
-A: No, see below:
-
-```Java
-import java.util.ArrayList;
-class C {
-  int x;
-  int y;
-  C (int x, int y) {
-    this.x = x;
-    this.y = y;
-  }
-}
-class LValue8 {
-  static void f (int x) {
-    ArrayList<C> list = new ArrayList<> ();
-    list.add (new C (5, 5));
-    list.add (new C (6, 6));
-    list.add (new C (7, 7));
-    list.add (new C (8, 8));
-    list.get(x++).x = 0;
-    for(int i = 0; i < list.size() ; i++){
-      C tmp = list.get(i);
-      System.out.printf("%d => %d \n", i, tmp.x);
+  ```Java
+  import java.util.ArrayList;
+  class C {
+    int x;
+    int y;
+    C (int x, int y) {
+      this.x = x;
+      this.y = y;
     }
   }
-  public static void main(String[] args){
-    f(0);
+  class LValue8 {
+    static void f (int x) {
+      ArrayList<C> list = new ArrayList<> ();
+      list.add (new C (5, 5));
+      list.add (new C (6, 6));
+      list.add (new C (7, 7));
+      list.add (new C (8, 8));
+      ... // put code here
+    }
   }
-}
-```
+  ```
+
+* #### A: No, see below:
+
+  ```Java
+  import java.util.ArrayList;
+  class C {
+    int x;
+    int y;
+    C (int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  class LValue8 {
+    static void f (int x) {
+      ArrayList<C> list = new ArrayList<> ();
+      list.add (new C (5, 5));
+      list.add (new C (6, 6));
+      list.add (new C (7, 7));
+      list.add (new C (8, 8));
+      list.get(x++).x = 0;
+      for(int i = 0; i < list.size() ; i++){
+        C tmp = list.get(i);
+        System.out.printf("%d => %d \n", i, tmp.x);
+      }
+    }
+    public static void main(String[] args){
+      f(0); //
+    }
+  }
+  ```
+
+---
+
+---
 
 ### Argument Passing
 
-#### 4.1 CBV in C - Int: confirm that C uses call-by-value to pass int variables by writing a simple C program then running it.
+* #### CBV in C - Int: confirm that C uses call-by-value to pass int variables by writing a simple C program then running it.
 
-```C
-void f(int x){
-  x++;
-  printf("f().x == %d \n", x);
+#### A:
+
+  ```C
+  void f(int x){
+    x++;
+    printf("f().x == %d \n", x);
+  }
+  int main() {
+    int x = 0;
+    f(x);
+    printf("%d \n", x);
+  }
+  /*Output:*/
+  /*f().x == 1 */
+  /*0 */
+  ```
+
+---
+
+#### CBV in C - Pointer: Confirm that C uses call-by-value to pass pointer variables by writing a simple C program then running it.
+
+#### A:
+
+  ```C
+  void f(int* x){
+    int z = 1;
+    x = &z;
+    printf("f().x ==> %d \n", x);
+  }
+  int main() {
+    int y = 0;
+    int* x = &y;
+    f(x);
+    printf("%p \n", x);
+  }
+  ```
+
+---
+
+* #### CBV in Java - Int: Confirm that Java uses call-by-value to pass int variables by writing a simple Java program then running it.
+
+#### A:
+
+  ```Java
+  public class JCBV{
+    static void f(int x){
+      x = x + 1;
+      System.out.printf("f().x => %d \n", x);
+    }
+    public static void main(String[] args){
+      int x =  5;
+      System.out.printf("x => %d \n", x);
+      f(x);
+      System.out.printf("x => %d \n", x);
+    }
+  }
+  ```
+
+---
+
+* #### CBV in Java - Reference: Confirm that Java uses call-by-value to pass reference variables (meaning references to instances on the heap) by writing a simple Java program then running it.
+
+#### A:
+
+```Java
+class ref{
+	int n;
+	public ref(int x){ this.n = x; }
 }
-int main() {
-  int x = 0;
-  f(x);
-  printf("%d \n", x);
+public class refPass{
+	static void f(ref r){
+		r.n = 7;
+		System.out.printf("r.x => %d \n", r.n);
+	}
+	public static void main(String[] args){
+		ref x = new ref(4);
+		System.out.printf("x => %d \n", x.n);
+		f(x);
+		System.out.printf("x.x => %d \n", x.n);
+	}
 }
-/*Output:*/
-/*f().x == 1 */
-/*0 */
 ```
 
-#### 4.1 CBV in C - Int: Confirm that C uses call-by-value to pass int variables by writing a simple C program then running it.
+---
 
-#### 4.2 CBV in C - Pointer: Confirm that C uses call-by-value to pass pointer variables by writing a simple C program then running it.
+* #### Java Immutable Pair Class - Q:
+  * #### The following Java program defines an immutable Pair class (with type parameters X and Y). Complete the definition of fibaux in the following Java program, which uses the immutable Pair class. You may need to refer to the Java documentation for use of Java's BigInteger class.
 
-#### 4.3 CBV in Java - Int: Confirm that Java uses call-by-value to pass int variables by writing a simple Java program then running it.
+  ```Java
+  import java.math.BigInteger;
 
-#### 4.4 CBV in Java - Reference: Confirm that Java uses call-by-value to pass reference variables (meaning references to instances on the heap) by writing a simple Java program then running it.
+  class Pair<X,Y> {
+    final X x;
+    final Y y;
+    Pair (X x, Y y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  public class Fib1 {
+    static Pair<BigInteger,BigInteger> fibaux (BigInteger n) {
+      ...
+    }
+    static BigInteger fib (BigInteger n) {
+      return fibaux (n).x;
+    }
+    public static void main (String[] args) {
+      for (int i = 0; i < 71; i++) {
+        System.out.println (fib (BigInteger.valueOf (i)));
+      }
+    }
+  }
+  ```
 
-#### [6 Q] Scope
+* #### Java Immutable Pair Class - A:
 
-Write a Scala expression alternates of type Stream[Boolean] that alternates between true and false (starting with true).
-Try the following expressions in the Scala REPL (after your definition of alternates).
-```Scala
-"the rain in spain".toList
+  ```Java
+  static Pair<BigInteger,BigInteger> fibaux (BigInteger n) {
+      if ((n.compareTo(BigInteger.valueOf(0)) <= 0) || (n.compareTo(BigInteger.valueOf(0)) == 0))
+        return new Pair<>(BigInteger.ZERO, BigInteger.ONE);
+      else if (n.compareTo(BigInteger.ONE) == 0)
+        return new Pair<> (BigInteger.ONE, BigInteger.ONE);
+      else {
+        Pair <BigInteger, BigInteger> tmp = fibaux(n.subtract(BigInteger.ONE));
+        return new Pair(tmp.y, tmp.x.add(tmp.y));
+      }
+  }
+  ```
 
-"the rain in spain".toList.zip (alternates)
+---
 
-"the rain in Spain".toList.zip (alternates).filter ((p:(Char,Boolean)) => p match { case (c:Char,b:Boolean) => b })
+### Closures
 
-/* shorthand for the previous version */
-"the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }
 
-"the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }
 
-val evens = "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }.map (p => p._1)
 
-val odds = "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => !b }.map (p => p._1)
+### Scope
 
-evens.zip (odds)
+* #### Write a Scala expression alternates of type Stream[Boolean] that alternates between true and false (starting with true). Try the following expressions in the Scala REPL (after your definition of alternates).
+
+  ```Scala
+  "the rain in spain".toList
+  "the rain in spain".toList.zip (alternates)
+  // res3: List[(Char, Boolean)] = List((t,true), (h,false))
+
+  "the rain in Spain".toList.zip (alternates).filter ((p:(Char,Boolean)) => p match { case (c:Char,b:Boolean) => b })
+  // res4: List[(Char, Boolean)] = List((t,true))
+
+  /* shorthand for the previous version */
+  "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }
+  // res4: List[(Char, Boolean)] = List((t,true))
+
+  "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }
+  // res4: List[(Char, Boolean)] = List((t,true))
+
+  val evens = "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => b }.map (p => p._1)
+  // evens: List[Char] = List(t)
+
+  val odds = "the rain in Spain".toList.zip (alternates).filter { case (c:Char,b:Boolean) => !b }.map (p => p._1)
+  // odds: List[Char] = List(h)
+
+  evens.zip (odds)
+  ```
+
+### Static and Dynamic Scope
+
+* #### Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java. Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
+
+* #### __TOUGH__ Example 1: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
+
+  ```Java
+  abstract class A {
+    int f (int x) {
+      System.out.format ("A.f (%d)%n", x);
+      return (x == 0) ? g () : f (x - 1);
+    }
+    abstract int g ();
+    void h () {
+      System.out.println ("A.h ()");
+    }
+  }
+  class B extends A {
+    int g () {
+      System.out.println ("B.g ()");
+      A r = this;
+      r.h ();
+      return 0;
+    }
+    void h () {
+      System.out.println ("B.h ()");
+      super.h ();
+    }
+  }
+  public class Inheritance07 {
+    public static void main (String[] args) {
+      A x = new B ();
+      x.f (3);
+    }
+  }
+  ```
+
+* #### A:
+    A.f (3)
+    A.f (2)
+    A.f (1)
+    A.f (0)
+    B.g ()
+    B.h ()
+    A.h ()
+
+
+* #### __TOUGH__ Example 2: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
+
+```Java
+class A {
+  int f (int x) {
+    System.out.format ("A.f (%d)%n", x);
+    return (x == 0) ? g () : f (x - 1);
+  }
+
+  int g () {
+    System.out.println ("A.g ()");
+    return 0;
+  }
+
+  void h () {
+    System.out.println ("A.h ()");
+  }
+}
+class B extends A {
+  int f (int x) {
+    System.out.format ("B.f (%d)%n", x);
+    return super.f (x);
+  }
+  int g () {
+    System.out.println ("B.g ()");
+    A r = this;
+    r.h ();
+    return 0;
+  }
+  void h () {
+    System.out.println ("B.h ()");
+    super.h ();
+  }
+}
+public class Inheritance08 {
+  public static void main (String[] args) {
+    A x = new B ();
+    x.f (3);
+  }
+}
 ```
-7 Static and Dynamic Scope
 
-Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java.
+* #### A:
 
-Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
+    B.f(3)
+    A.f(3)
+    B.f(2)
+    A.f(2)
+    B.f(1)
+    A.f(1)
+    B.f(0)
+    A.f(0)
+    B.g()
+    B.h()
 
-Feel free to post your solutions to Piazza.
 
-#### [2 Q] Use of Call Stack for storing args
+* #### Example 3: Consider the following Java program. Work out what will be printed when it runs. compile and run it (yes, it is meant to do that).
 
-#### [2 Q] Subtyping (including lists and arrays)
+  ```Java
+  class A {
+    int f (int x) {
+      System.out.format ("A.f (%d)%n", x);
+      return (x == 0) ? g () : f (x - 1);
+    }
+
+    int g () {
+      System.out.println ("A.g ()");
+      return 0;
+    }
+
+    void h () {
+      System.out.println ("A.h ()");
+    }
+  }
+  class B extends A {
+    int f (int x) {
+      System.out.format ("B.f (%d)%n", x);
+      return this.f (x);
+    }
+
+    int g () {
+      System.out.println ("B.g ()");
+      A r = this;
+      r.h ();
+      return 0;
+    }
+
+    void h () {
+      System.out.println ("B.h ()");
+      super.h ();
+    }
+  }
+
+  public class Inheritance09 {
+    public static void main (String[] args) {
+      A x = new B ();
+      x.f (3);
+    }
+  }
+  ```
+
+* #### A: B.f(3) repeats infinitely
+
+## Composition And Delegation
+
+The Java programs in this section use composition and delegation.
+
+* #### Example 1: Consider the following Java program. Work out what will be printed when it runs.
+
+  ```Java
+  class A {
+    int f (int x) {
+      System.out.format ("A.f (%d)%n", x);
+      if (x == 0) {
+        return g ();
+      } else {
+        return f (x - 1);
+      }
+    }
+
+    int g () {
+      System.out.println ("A.g ()");
+      return 0;
+    }
+  }
+
+  class B {
+    A a = new A ();
+
+    int f (int x) {
+      System.out.format ("B.f (%d)%n", x);
+      return a.f (x);
+    }
+
+    int g () {
+      System.out.println ("B.g ()");
+      return 0;
+    }
+  }
+  public class Inheritance05 {
+    public static void main (String[] args) {
+      new B ().f (3);
+    }
+  }
+  ```
+
+* #### A:
+
+    B.f (3)
+    A.f (3)
+    A.f (2)
+    A.f (1)
+    A.f (0)
+    A.g ()
+
+* #### Example 2: Consider the following Java program. Work out what will be printed when it runs.
+
+```Java
+interface I {
+  int f (int x);
+  int g ();
+}
+
+class A implements I {
+  I back = this;
+
+  public int f (int x) {
+    System.out.format ("A.f (%d)%n", x);
+    if (x == 0) {
+      return back.g ();
+    } else {
+      return back.f (x - 1);
+    }
+  }
+  public int g () {
+    System.out.println ("A.g ()");
+    return 0;
+  }
+}
+class B implements I {
+  A a;
+  B () {
+    a = new A ();
+    a.back = this;
+  }
+  public int f (int x) {
+    System.out.format ("B.f (%d)%n", x);
+    return a.f (x);
+  }
+  public int g () {
+    System.out.println ("B.g ()");
+    return 0;
+  }
+}
+public class Inheritance06 {
+  public static void main (String[] args) {
+    new B ().f (3);
+  }
+}
+```
+
+* #### A:
+
+    B.f(3)
+    A.f(3)
+    B.f(2)
+    A.f(2)
+    A.f(1)
+    B.f(1)
+    B.f(0)
+    A.f(0)
+    B.g()
 
 
 ### (Java) Dynamic Dispatch & Covariant Subtyping:
@@ -442,25 +838,31 @@ Feel free to post your solutions to Piazza.
   ```
 
 * #### A:
-  * A
-  * B
-  * A
-  * B
-  * B
-  * Exception in thread "main" java.lang.ArrayStoreException: A
-    * at Dispatch1.main(Dispatch1.java:35)
-    * (which is) arr3[n] = new A ();
-      * arr3's dynamic type is B[] but it's static type is A[]
-      * therefore arr3 can take in an A value (caused by new A())
-      * however, because arr3 is dynamically an array of Bs, it cannot take in an A value and so throws an ArrayStoreException
 
-## 3. Subtyping:
+  ```Java
+    A
+    B
+    A
+    B
+    B
+    Exception in thread "main" java.lang.ArrayStoreException: A
+      at Dispatch1.main(Dispatch1.java:35)
+    /*
+     * (which is) arr3[n] = new A ();
+     * arr3's dynamic type is B[] but it's static type is A[]
+     * therefore arr3 can take in an A value (caused by new A())
+     * however, because arr3 is dynamically an array of Bs, it cannot take in an A value and so throws an ArrayStoreException
+     */
+  ```
+
+## Subtyping:
 
 * #### 3.1 Q: Is it true that subtyping is a symmetric relation?
   * #### I.e., if Y<:X then X<:Y. if Y is a subclass of X is X a subclass of Y?
   * #### If you answer no, give an example Java or Scala program that proves your point (it should fail to compile).
 
-* #### 3.1 A:
+* #### A:
+
   ```Java
   class C {
 		void f () {System.out.println("C.f()");}
@@ -476,6 +878,7 @@ Feel free to post your solutions to Piazza.
 	 }
   }
   ```
+
 ---
 
 * #### 3.2 Transitivity Q: Suppose W<:X, X<:Y, and List[Y]<:Z. Is it the case that List[W]<:Z?
@@ -489,10 +892,7 @@ Feel free to post your solutions to Piazza.
     static class A           { int x; }
     static class B extends A { int y; }
 
-    static B convert (A p){
-      B result = (B) p;
-      return result;
-    }
+    static B convert (A p)   { B result = (B) p; return result; }
 
     public static void main (String[] args){
       A r = new A();
@@ -510,8 +910,7 @@ Feel free to post your solutions to Piazza.
   * #### Q: verify that the *List* type is covariant in Scala by entering the following Scala program into the Scala REPL
 
   ```Scala
-  class B {
-    def f (x:Int) : Int             = 1
+  class B { def f (x:Int) : Int             = 1
   }
 
   class C extends B {
@@ -553,3 +952,8 @@ Feel free to post your solutions to Piazza.
   ```
 
 * #### A: val xs4:Array[B] = xs2 is illegal because B is not a subtype of C and arrays in Scala are invariant
+
+
+### Nested Classes:
+
+* ####
