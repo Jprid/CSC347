@@ -575,6 +575,8 @@ public class refPass{
   ```
 
 * #### A:
+
+```
     A.f (3)
     A.f (2)
     A.f (1)
@@ -582,7 +584,7 @@ public class refPass{
     B.g ()
     B.h ()
     A.h ()
-
+```
 
 * #### __TOUGH__ Example 2: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
 
@@ -628,6 +630,7 @@ public class Inheritance08 {
 
 * #### A:
 
+    ```
     B.f(3)
     A.f(3)
     B.f(2)
@@ -638,6 +641,7 @@ public class Inheritance08 {
     A.f(0)
     B.g()
     B.h()
+    ```
 
 
 * #### Example 3: Consider the following Java program. Work out what will be printed when it runs. compile and run it (yes, it is meant to do that).
@@ -732,12 +736,14 @@ The Java programs in this section use composition and delegation.
 
 * #### A:
 
+    ```
     B.f (3)
     A.f (3)
     A.f (2)
     A.f (1)
     A.f (0)
     A.g ()
+    ```
 
 * #### Example 2: Consider the following Java program. Work out what will be printed when it runs.
 
@@ -787,6 +793,7 @@ public class Inheritance06 {
 
 * #### A:
 
+    ```
     B.f(3)
     A.f(3)
     B.f(2)
@@ -796,7 +803,7 @@ public class Inheritance06 {
     B.f(0)
     A.f(0)
     B.g()
-
+    ```
 
 ### (Java) Dynamic Dispatch & Covariant Subtyping:
 
