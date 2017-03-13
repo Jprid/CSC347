@@ -155,7 +155,7 @@
   }
   ```
 
-* #### A: Yes (see below)
+#### A: Yes (see below)
 
   ```C
   struct S {
@@ -185,7 +185,7 @@
   ---
 
 
-* #### Q: Is f ()->x an l-value in C? Recall that this means (*(f())).x, i.e., call f, dereference the pointer, then access the x member of the struct. The context is:
+ #### Q: Is f ()->x an l-value in C? Recall that this means (*(f())).x, i.e., call f, dereference the pointer, then access the x member of the struct. The context is:
 
   ```C
   #include <stdlib.h>
@@ -204,7 +204,7 @@
   }
   ```
 
-* #### A: Yes, see below
+#### A: Yes, see below
 
 ```C
 #include <stdlib.h>
@@ -229,46 +229,7 @@ int main () {
 
 ---
 
-* #### Q: Is arr[x++] an l-value in Java? The context is:
-
-  ```Java
-  class LValue6 {
-    static void f (int x) {
-      int[] arr = { 5, 6, 7, 8, 9, 10, 11 };
-      ...
-    }
-  }
-  ```
-
-* #### A: yes, see below:
-
-```Java
-class LValue06 {
-  static void f (int x) {
-    int[] arr = { 5, 6, 7, 8, 9, 10, 11 };
-    arr[x++] = 1;
-    for(int i = 0; i < arr.length ; i++){
-	    System.out.printf("%d => %d \n", i, arr[i]);
-    }
-  }
-  public static void main(String[] args){
-  	f(0);
-    /* OUTPUT:
-    0 => 1
-    1 => 6
-    2 => 7
-    3 => 8
-    4 => 9
-    5 => 10
-    6 => 11
-    */
-  }
-}
-```
-
----
-
-* #### Q: Is list.get (x++) an l-value in Java? The context is:
+#### Q: Is list.get (x++) an l-value in Java? The context is:
 
   ```Java
   import java.util.ArrayList;
@@ -284,7 +245,7 @@ class LValue06 {
   }
   ```
 
-* #### A: No, see below
+#### A: No, see below
 
 ```Java
 import java.util.ArrayList;
@@ -312,7 +273,7 @@ class LValue7 {
 
 ---
 
-* #### Q: Is list.get (x++).x an l-value in Java? The context is:
+#### Q: Is list.get (x++).x an l-value in Java? The context is:
 
   ```Java
   import java.util.ArrayList;
@@ -336,7 +297,7 @@ class LValue7 {
   }
   ```
 
-* #### A: No, see below:
+ #### A: No, see below:
 
   ```Java
   import java.util.ArrayList;
@@ -373,7 +334,7 @@ class LValue7 {
 
 ### Argument Passing
 
-* #### CBV in C - Int: confirm that C uses call-by-value to pass int variables by writing a simple C program then running it.
+#### CBV in C - Int: confirm that C uses call-by-value to pass int variables by writing a simple C program then running it.
 
 #### A:
 
@@ -414,7 +375,7 @@ class LValue7 {
 
 ---
 
-* #### CBV in Java - Int: Confirm that Java uses call-by-value to pass int variables by writing a simple Java program then running it.
+#### CBV in Java - Int: Confirm that Java uses call-by-value to pass int variables by writing a simple Java program then running it.
 
 #### A:
 
@@ -429,13 +390,18 @@ class LValue7 {
       System.out.printf("x => %d \n", x);
       f(x);
       System.out.printf("x => %d \n", x);
+      /* OUTPUT:
+       * x => 5
+       * f().x => 6
+       * x => 5
+       */
     }
   }
   ```
 
 ---
 
-* #### CBV in Java - Reference: Confirm that Java uses call-by-value to pass reference variables (meaning references to instances on the heap) by writing a simple Java program then running it.
+#### CBV in Java - Reference: Confirm that Java uses call-by-value to pass reference variables (meaning references to instances on the heap) by writing a simple Java program then running it.
 
 #### A:
 
@@ -454,14 +420,20 @@ public class refPass{
 		System.out.printf("x => %d \n", x.n);
 		f(x);
 		System.out.printf("x.x => %d \n", x.n);
+    /* OUTPUT:
+    x => 4
+    r.x => 7
+    x.x => 7*
+    /
 	}
 }
 ```
 
 ---
 
-* #### Java Immutable Pair Class - Q:
-  * #### The following Java program defines an immutable Pair class (with type parameters X and Y). Complete the definition of fibaux in the following Java program, which uses the immutable Pair class. You may need to refer to the Java documentation for use of Java's BigInteger class.
+#### Java Immutable Pair Class - Q:
+
+ #### The following Java program defines an immutable Pair class (with type parameters X and Y). Complete the definition of fibaux in the following Java program, which uses the immutable Pair class. You may need to refer to the Java documentation for use of Java's BigInteger class.
 
   ```Java
   import java.math.BigInteger;
@@ -489,7 +461,7 @@ public class refPass{
   }
   ```
 
-* #### Java Immutable Pair Class - A:
+#### Java Immutable Pair Class - A:
 
   ```Java
   static Pair<BigInteger,BigInteger> fibaux (BigInteger n) {
@@ -513,10 +485,10 @@ public class refPass{
 
 ### Scope
 
-* #### Write a Scala expression alternates of type Stream[Boolean] that alternates between true and false (starting with true). Try the following expressions in the Scala REPL (after your definition of alternates).
+ #### Write a Scala expression alternates of type Stream[Boolean] that alternates between true and false (starting with true). Try the following expressions in the Scala REPL (after your definition of alternates).
 
   ```Scala
-  "the rain in spain".toList
+  "the rain in spain".tolist
   "the rain in spain".toList.zip (alternates)
   // res3: List[(Char, Boolean)] = List((t,true), (h,false))
 
@@ -544,11 +516,43 @@ public class refPass{
   val alternates: Stream[Boolean] = true #:: false #:: alternates
   ```
 
+  ```Scala
+  // with console OUTPUT
+  scala> val alternates : Stream[Boolean] = true #:: false #:: alternates
+  alternates: Stream[Boolean] = Stream(true, ?)
+
+  scala> "the rain in spain".toList
+  res4: List[Char] = List(t, h, e,  , r, a, i, n,  , i, n,  , s, p, a, i, n)
+
+  scala> "the rain in spain".toList.zip (alternates)
+  res5: List[(Char, Boolean)] = List((t,true), (h,false), (e,true), ( ,false), (r,true), (a,false), (i,true), (n,false), ( ,true), (i,false), (n,true), ( ,false), (s,true), (p,false), (a,true), (i,false), (n,true))
+
+  scala> "the rain in Spain".toList.zip(alternates).filter((p:(Char, Boolean)) => p match { case (c:Char, b:Boolean) => b})
+
+  res6: List[(Char, Boolean)] =
+  List((t,true), (e,true), (r,true), (i,true), ( ,true), (n,true), (S,true), (a,true), (n,true))
+
+  scala> "the rain in Spain".toList.zip (alternates).filter{ case (c:Char, b:Boolean) => b }
+  res8: List[(Char, Boolean)] = List((t,true), (e,true), (r,true), (i,true), ( ,true), (n,true), (S,true), (a,true), (n,true))
+
+  scala> val evens = "the rain in Spain".toList.zip(alternates).filter { case (c:Char, b:Boolean) => b }.map (p => p._1)
+  evens: List[Char] = List(t, e, r, i,  , n, S, a, n)
+
+  scala> val odds = "the rain in Spain".toList.zip(alternates).filter {case (c:Char, b:Boolean) => !b }.map(p => p._1)
+  odds: List[Char] = List(h,  , a, n, i,  , p, i)
+
+  scala> evens.zip(odds)
+  res9: List[(Char, Char)] = List((t,h), (e, ), (r,a), (i,n), ( ,i), (n, ), (S,p), (a,i))
+
+  ```
+
+
+
 ### Static and Dynamic Scope
 
-* #### Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java. Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
+#### Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java. Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
 
-* #### __TOUGH__ Example 1: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
+#### __TOUGH__ Example 1: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
 
   ```Java
   abstract class A {
@@ -581,7 +585,7 @@ public class refPass{
   }
   ```
 
-* #### A:
+#### A:
 
 ```
     A.f (3)
@@ -593,7 +597,7 @@ public class refPass{
     A.h ()
 ```
 
-* #### __TOUGH__ Example 2: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
+#### __TOUGH__ Example 2: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
 
 ```Java
 class A {
@@ -635,7 +639,7 @@ public class Inheritance08 {
 }
 ```
 
-* #### A:
+#### A:
 
     ```
     B.f(3)
@@ -651,7 +655,7 @@ public class Inheritance08 {
     ```
 
 
-* #### Example 3: Consider the following Java program. Work out what will be printed when it runs. compile and run it (yes, it is meant to do that).
+#### Example 3: Consider the following Java program. Work out what will be printed when it runs. compile and run it (yes, it is meant to do that).
 
   ```Java
   class A {
@@ -696,13 +700,13 @@ public class Inheritance08 {
   }
   ```
 
-* #### A: B.f(3) repeats infinitely
+#### A: B.f(3) repeats infinitely
 
 ## Composition And Delegation
 
 The Java programs in this section use composition and delegation.
 
-* #### Example 1: Consider the following Java program. Work out what will be printed when it runs.
+#### Example 1: Consider the following Java program. Work out what will be printed when it runs.
 
   ```Java
   class A {
@@ -741,7 +745,7 @@ The Java programs in this section use composition and delegation.
   }
   ```
 
-* #### A:
+#### A:
 
     ```
     B.f (3)
@@ -752,7 +756,7 @@ The Java programs in this section use composition and delegation.
     A.g ()
     ```
 
-* #### Example 2: Consider the following Java program. Work out what will be printed when it runs.
+#### Example 2: Consider the following Java program. Work out what will be printed when it runs.
 
 ```Java
 interface I {
@@ -798,23 +802,23 @@ public class Inheritance06 {
 }
 ```
 
-* #### A:
+#### A:
 
     ```
-    B.f(3)
-    A.f(3)
-    B.f(2)
-    A.f(2)
-    A.f(1)
-    B.f(1)
-    B.f(0)
-    A.f(0)
-    B.g()
+    B.f (3)
+    A.f (3)
+    B.f (2)
+    A.f (2)
+    B.f (1)
+    A.f (1)
+    B.f (0)
+    A.f (0)
+    B.g ()
     ```
 
 ### (Java) Dynamic Dispatch & Covariant Subtyping:
 
-* #### Q: what is printed when this (java) program runs?
+#### Q: what is printed when this (java) program runs?
 
   ```Java
   interface I {
@@ -851,7 +855,7 @@ public class Inheritance06 {
   }
   ```
 
-* #### A:
+#### A:
 
   ```Java
     A
@@ -871,11 +875,14 @@ public class Inheritance06 {
 
 ## Subtyping:
 
-* #### 3.1 Q: Is it true that subtyping is a symmetric relation?
-  * ##### I.e., if Y<:X then X<:Y. (if Y is a subclass of X is X a subclass of Y?
-  * ##### If you answer no, give an example Java or Scala program that proves your point (it should fail to compile).
+#### 3.1
+Q: Is it true that subtyping is a symmetric relation?
 
-* #### A:
+ ##### I.e., if Y<:X then X<:Y. (if Y is a subclass of X is X a subclass of Y?
+
+ ##### If you answer no, give an example Java or Scala program that proves your point (it should fail to compile).
+
+#### A:
 
   ```Java
   class C {
@@ -895,12 +902,13 @@ public class Inheritance06 {
 
 ---
 
-* #### 3.2 Transitivity Q: Suppose W<:X, X<:Y, and List[Y]<:Z. Is it the case that List[W]<:Z?
+#### 3.2 Transitivity Q: Suppose W<:X, X<:Y, and List[Y]<:Z. Is it the case that List[W]<:Z?
 
-* #### 3.2 A: Yes (not really sure)
+#### 3.2 A: Yes (not really sure)
 
-* #### 3.3 Downcasting
-  * #### Q: Something is wrong with the method convert in the following Java program. Does it fail at compile time or at runtime? Verify your answer by compiling and (perhaps) running the program.
+#### 3.3 Downcasting
+
+ #### Q: Something is wrong with the method convert in the following Java program. Does it fail at compile time or at runtime? Verify your answer by compiling and (perhaps) running the program.
   ```Java
   public class Downcast {
     static class A           { int x; }
@@ -916,12 +924,13 @@ public class Inheritance06 {
     }
   }
   ```
-* #### 3.3 A: runtime error --> A != B, therefore the attempted cast of p to B results in a type mismatch error.
+#### 3.3 A: runtime error --> A != B, therefore the attempted cast of p to B results in a type mismatch error.
 
 ## Subtyping and variance in Scala
 
-* #### 4.1 Covariant Lists:
-  * #### Q: verify that the *List* type is covariant in Scala by entering the following Scala program into the Scala REPL
+#### 4.1 Covariant Lists:
+
+ #### Q: verify that the *List* type is covariant in Scala by entering the following Scala program into the Scala REPL
 
   ```Scala
   class B { def f (x:Int) : Int             = 1
@@ -939,13 +948,17 @@ public class Inheritance06 {
   xs4(1).f(0)
   ```
 
-  * #### A:
-    *  #### Note: xs2 is a List of type C
-    *  #### Note: xs4 is a List of type B
-    *  #### because Lists are covariant in Scala, xs4 can take in C values
+#### A:
 
-* #### 4.2 Invariant Arrays:
-* #### Q: Verify that the Array type is invariant in Scala by entering the following Scala program into the Scala REPL.
+  #### Note: xs2 is a List of type C
+
+  #### Note: xs4 is a List of type B
+
+  #### because Lists are covariant in Scala, xs4 can take in C values
+
+#### 4.2 Invariant Arrays:
+
+ #### Q: Verify that the Array type is invariant in Scala by entering the following Scala program into the Scala REPL.
 
   ```Scala
   class B {
@@ -965,12 +978,11 @@ public class Inheritance06 {
   xs2 (0).g ()
   ```
 
-* #### A: val xs4:Array[B] = xs2 is illegal because B is not a subtype of C and arrays in Scala are invariant
+#### A: val xs4:Array[B] = xs2 is illegal because B is not a subtype of C and arrays in Scala are invariant
 
 
 ### Nested Classes:
 
-// TODO:
   * rewrite program to use anonymous inner classes:
 
 ```Java
@@ -1069,7 +1081,7 @@ public class Threads2 {
 }
 ```
 
-  * #### 8.2 examine Threads2 classes (via Javap)
+#### 8.2 examine Threads2 classes (via Javap)
 
 ```Java
 C:\School\Notes\CSC347\closures\target\scala-2.10\classes>javap Threads1.class
@@ -1098,7 +1110,7 @@ class Threads2$1$1 implements java.lang.Runnable {
 }
 ```
 
-  * #### Java collections processing - Q:
+#### Java collections processing - Q:
 
 Then change the code so that it prints N x characters for each number N in the list. You should define a method that takes an Integer (or int) N and returns a String consisting of N x characters. You can then call that method from apply. You will need to update the type parameters to Function.
 
@@ -1123,7 +1135,7 @@ public class Nested {
 }
 ```
 
-* #### Java Collections processing - A:
+#### Java Collections processing - A:
 
 ```Java
 import java.util.*;
@@ -1153,7 +1165,7 @@ public class Nested {
 }
 ```
 
-* #### Scala Nested Classes - Q:
+#### Scala Nested Classes - Q:
 
 TODO: FORMAT
 
@@ -1185,8 +1197,7 @@ object O {
 /*end 0.Scala*/
 ```
 
-* #### Scala Nested Classes - A:
-
+#### Scala Nested Classes - A:
 
 ```
 /* OUTPUT: */
@@ -1205,7 +1216,7 @@ in
 spain
 ```
 
-* #### Nested Functions - Q:
+#### Nested Functions - Q:
 
 Which of the nested functions can run when the enclosing function (foo1, …, foo6) has returned?
 
@@ -1256,7 +1267,6 @@ object NestedFunc {
 }
 ```
 
-* #### Nested Functions - A:
+#### Nested Functions - A:
 
-```Scala
-```
+* foo6 returns a function that can be called even after the lifetime of foo6 has ended
