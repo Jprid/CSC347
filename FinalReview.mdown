@@ -11,9 +11,11 @@
 
 ##### [4 Q] Parameter passing (L/R values + CBV + CBR):
 
+##### [6 Q] Scope
+
 ##### [2 Q] Use of Call Stack for storing args
 
-##### [2 Q] Subtyping (including lists and arrays)
+##### [3 Q] Subtyping (including lists and arrays)
 
 ---
 
@@ -537,6 +539,11 @@ public class refPass{
   evens.zip (odds)
   ```
 
+  ```Scala
+  // Alternates definition:
+  val alternates: Stream[Boolean] = true #:: false #:: alternates
+  ```
+
 ### Static and Dynamic Scope
 
 * #### Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java. Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
@@ -865,8 +872,8 @@ public class Inheritance06 {
 ## Subtyping:
 
 * #### 3.1 Q: Is it true that subtyping is a symmetric relation?
-  * #### I.e., if Y<:X then X<:Y. if Y is a subclass of X is X a subclass of Y?
-  * #### If you answer no, give an example Java or Scala program that proves your point (it should fail to compile).
+  * ##### I.e., if Y<:X then X<:Y. (if Y is a subclass of X is X a subclass of Y?
+  * ##### If you answer no, give an example Java or Scala program that proves your point (it should fail to compile).
 
 * #### A:
 
@@ -963,4 +970,293 @@ public class Inheritance06 {
 
 ### Nested Classes:
 
-* ####
+// TODO:
+  * rewrite program to use anonymous inner classes:
+
+```Java
+// QUESTION:
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+
+class PrintMessage implements Runnable {
+  final String message;
+
+  PrintMessage (String message) {
+    this.message = message;
+  }
+
+  public void run () {
+    System.out.println (message);
+  }
+}
+
+class Sender implements Runnable {
+  private final String[] messages;
+  private final BlockingQueue<Runnable> q;
+
+  Sender (String[] messages, BlockingQueue<Runnable> q) {
+    this.messages = messages;
+    this.q = q;
+  }
+
+  public void run () {
+    try {
+      System.out.println ("Sender started");
+      for (int i = 0; i < messages.length; i++) {
+        Thread.sleep (1000);
+        q.put (new PrintMessage (messages[i]));
+      }
+    } catch (InterruptedException e) {
+      // ignore interruptions
+    }
+  }
+}
+
+public class Threads1 {
+  public static void main (String[] args) {
+    try {
+      String[] messages = new String[] { "the", "rain", "in", "Spain", "falls", "mainly", "on", "the", "plain" };
+      BlockingQueue<Runnable> q = new LinkedBlockingQueue<> ();
+      Sender sender = new Sender (messages, q);
+      new Thread (sender).start ();
+      while (true) {
+        q.take ().run ();
+      }
+    } catch (InterruptedException e) {
+      // ignore interruptions
+    }
+  }
+}
+```
+
+```Java
+// ANSWER:
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class Threads2 {
+  public static void main (String[] args) {
+  	try{
+	  	String[] messages = new String[] { "the", "rain", "in", "Spain", "falls", "mainly", "on", "the", "plain" };
+	    BlockingQueue<Runnable> q = new LinkedBlockingQueue<> ();
+	  	Runnable Sender = new Runnable() {
+	  		public void run(){
+				try {
+				  System.out.println ("Sender started");
+				  for (int i = 0; i < messages.length; i++) {
+				    Thread.sleep (1000);
+				    final String msg = messages[i];
+				    q.put (new Runnable(){
+				    	public void run(){
+					    	System.out.println(msg);
+				    	}
+				    });
+				  }
+				} catch (InterruptedException e) {
+				  // ignore interruptions
+				}
+		  	}
+	  	};
+	  	new Thread (Sender).start();
+	  	while (true){
+	  		q.take().run();
+	  	}
+  	} catch (InterruptedException e) {
+  		  		// ignore
+  	}
+}
+}
+```
+
+  * #### 8.2 examine Threads2 classes (via Javap)
+
+```Java
+C:\School\Notes\CSC347\closures\target\scala-2.10\classes>javap Threads1.class
+Compiled from "Threads1.java"
+public class Threads1 {
+  public Threads1();
+  public static void main(java.lang.String[]);
+}
+
+C:\School\Notes\CSC347\closures\target\scala-2.10\classes>javap Threads2$1.class
+Compiled from "Threads2.java"
+final class Threads2$1 implements java.lang.Runnable {
+  final java.lang.String[] val$messages;
+  final java.util.concurrent.BlockingQueue val$q;
+  Threads2$1(java.lang.String[], java.util.concurrent.BlockingQueue);
+  public void run();
+}
+
+C:\School\Notes\CSC347\closures\target\scala-2.10\classes>javap Threads2$1$1.class
+Compiled from "Threads2.java"
+class Threads2$1$1 implements java.lang.Runnable {
+  final java.lang.String val$msg;
+  final Threads2$1 this$0;
+  Threads2$1$1(Threads2$1, java.lang.String);
+  public void run();
+}
+```
+
+  * #### Java collections processing - Q:
+
+Then change the code so that it prints N x characters for each number N in the list. You should define a method that takes an Integer (or int) N and returns a String consisting of N x characters. You can then call that method from apply. You will need to update the type parameters to Function.
+
+```Java
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+public class Nested {
+  public static void main (String[] args) {
+    List<Integer> l = new ArrayList<> ();
+    l.add(1);
+    l.add(2);
+    l.add(3);
+    Function<Integer, Integer> () f;
+    f = new Function<Integer, Integer> () {
+      public Integer apply (Integer x ) { return x + 1; }
+    };
+    l.stream ().map (f).collect(Collectors.toList())
+     .forEach(x -> System.out.println(x));
+  }
+}
+```
+
+* #### Java Collections processing - A:
+
+```Java
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+public class Nested {
+  public static void main (String[] args) {
+    List<Integer> l = new ArrayList<> ();
+    l.add(1);
+    l.add(2);
+    l.add(3);
+    Function<Integer, String> rep;
+    rep = new Function<Integer, String> (){
+      public String apply (Integer x) {
+        final String s = new String(new char[x]).replace('\0', "x".charAt(0));
+        return s;
+      }
+    };
+    Function<Integer, Integer> f;
+    f = new Function<Integer, Integer> () {
+      public Integer apply (Integer x ) { return x + 1; }
+    };
+    l.stream ().map (rep).collect(Collectors.toList())
+     .forEach(x -> System.out.println(x));
+  }
+}
+```
+
+* #### Scala Nested Classes - Q:
+
+TODO: FORMAT
+
+Scala allows class declarations and object declarations. Classes, objects, and functions/methods can be nested arbitrarily.
+
+Object declarations can be thought of as defining a new class and instantiating just one copy if (cf. the Singleton Pattern described in SE350/SE450). There are no static methods or classes.
+
+Save the following as O.scala in the same directory as SHello.scala and compile it with SBT.
+
+
+```Scala
+/*start 0.Scala*/
+import scala.language.existentials
+
+object O {
+  def main (args:Array[String]) {
+    class C (x:Int) {
+      println ("C")
+      object P {
+        println ("P")
+        def f () { println (args (x)) }
+      }
+    }
+    val cs:List[C] = for (i <- (0 to (args.length - 1)).toList) yield new C (i)
+    val ps:List[c.P.type forSome { val c:C }] = for (c <- cs) yield c.P
+    ps.foreach (p => p.f)
+  }
+}
+/*end 0.Scala*/
+```
+
+* #### Scala Nested Classes - A:
+
+
+```
+/* OUTPUT: */
+[info] Running N the rain in spain
+C
+C
+C
+C
+P
+P
+P
+P
+the
+rain
+in
+spain
+```
+
+* #### Nested Functions - Q:
+
+Which of the nested functions can run when the enclosing function (foo1, …, foo6) has returned?
+
+```Scala
+object NestedFunc {
+  def foo1 [X] (xs:List[X]) : List[X] = {
+    def aux (us:List[X], vs:List[X]) : List[X] = {
+      us match {
+        case Nil => vs
+        case w::ws => aux (ws, w::vs)
+      }
+    }
+    aux (xs, Nil)
+  }
+
+  def foo2 [X] (xs:List[X], k:X=>X) : List[X] = {
+    def aux (us:List[X], vs:List[X]) : List[X] = {
+      us match {
+        case Nil => vs
+        case w::ws => aux (ws, (k (w)) :: vs)
+      }
+    }
+    aux (xs, Nil)
+  }
+
+  def foo3 [X] (xs:List[X]) : Int=>List[X] = {
+    def aux (n:Int) : List[X] = {
+      if (n <= 0) {
+        Nil
+      } else {
+        xs ::: aux (n - 1)
+      }
+    }
+    aux
+  }
+
+  def foo4 [X] (xs:List[X]) : Unit = {
+    xs.foreach ((x:X) => println (x))
+  }
+
+  def foo5 (xs:List[Int]) : Int = {
+    xs.foldLeft (0) ((x:Int,y:Int) => x + y)
+  }
+
+  def foo6 (xs:List[Int]) : Int=>Int = {
+    (n:Int) => (xs.foldLeft (0) ((x:Int,y:Int) => x + y))
+  }
+}
+```
+
+* #### Nested Functions - A:
+
+```Scala
+```
