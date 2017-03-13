@@ -40,7 +40,7 @@
     obj.m1 ().f1[n + 2].m2 ().f2 = 7
     ```
 
-* #### Is x++ an l-value in C? The context is:
+#### Is x++ an l-value in C? The context is:
 
   ```C
   void f (int x) {
@@ -48,7 +48,7 @@
   }
   ```
 
-  * #### No, (see below)
+ #### No, (see below)
 
   ```C
   void f (int x) {
@@ -64,7 +64,7 @@
 
 ---
 
-* #### Q: Is arr[x++] an l-value in C? The context is:
+#### Q: Is arr[x++] an l-value in C? The context is:
 
   ```C
   void f (int x) {
@@ -73,7 +73,7 @@
   }
   ```
 
-* #### A: yes (See below)
+#### A: yes (See below)
 
   ```C
   void f (int x) {
@@ -109,7 +109,7 @@
   }
   ```
 
-* #### A: No (see below)
+#### A: No (see below)
 
   ```C
   struct S {
@@ -134,7 +134,7 @@
   ```
 ---
 
-* #### Q: Is t.x an l-value in C? The context is:
+#### Q: Is t.x an l-value in C? The context is:
 
   ```C
   struct S {
@@ -506,6 +506,54 @@ def mapDebug [A,B] (xs:List[A], f:A=>B) : List[B] = {
 def mapDebug [A,B] (xs:List[A], f:A=>B) : List[B] = {
   xs.map ((x:A) => { println (x); f (x) })  // make function anonymous
 }
+```
+
+#### Closures-GCC W/O FXNPTRS
+
+Lifetime problems caused by nested functions
+
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef void (*funcptr) (int);
+
+funcptr f (int x) {
+  void g (int y) {
+    printf ("x = %d, y = %d\n", x, y); // use x from enclosing defn
+  }
+  for (int i = 0; i < 3; i++) {
+    g (i); // OK, f's activation record still allocated
+  }
+  return &g;
+}
+
+int main (void) {
+  funcptr h = f (5);
+  for (int i = 0; i < 3; i++) {
+    (*h) (i); // unsafe to call h, f's activation is deallocated!
+  }
+  f (6);
+  for (int i = 0; i < 3; i++) {
+    (*h) (i); // unsafe to call h, f's activation is deallocated!
+  }
+}
+/* OUTPUT:
+$ gcc -std=c99 -o gcc-nested gcc-nested.c
+$ ./gcc-nested
+x = 5, y = 0 <- safe to call g
+x = 5, y = 1
+x = 5, y = 2
+x = 5, y = 0 <- unsafe to call h, happens to be correct output x=5
+x = 5, y = 1
+x = 5, y = 2
+x = 6, y = 0 <- safe to call g
+x = 6, y = 1
+x = 6, y = 2
+x = 6, y = 0 <- unsafe to call h, incorrect output x should be 5
+x = 6, y = 1
+x = 6, y = 2
+*/
 ```
 
 
