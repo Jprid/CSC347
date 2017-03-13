@@ -480,12 +480,64 @@ public class refPass{
 
 ### Closures
 
+#### runtime support for nested functions (when lifetimes don't nest)
+
+#### __only in static/lexically scoped PLs__
+
+#### EXAMPLE: NESTED FUNCTIONS
+
+```Scala
+def printElt [A,B] (f:A=>B) (x:A) : B = {
+  println (x)
+  f (x)
+}
+
+def mapDebug [A,B] (xs:List[A], f:A=>B) : List[B] = {
+  xs.map (printElt (f))
+}
+def mapDebug [A,B] (xs:List[A], f:A=>B) : List[B] = {
+  def printElt (x:A) : B = {
+    println (x)
+    f (x)  // use f from enclosing context
+  }
+  xs.map (printElt)
+}
+// ALTERNATIVELY:
+def mapDebug [A,B] (xs:List[A], f:A=>B) : List[B] = {
+  xs.map ((x:A) => { println (x); f (x) })  // make function anonymous
+}
+```
 
 
+---
 
 ### Scope
 
- #### Write a Scala expression alternates of type Stream[Boolean] that alternates between true and false (starting with true). Try the following expressions in the Scala REPL (after your definition of alternates).
+ Write a Scala expression alternates of type Stream[Boolean] that alternates between true and false (starting with true). Try the following expressions in the Scala REPL (after your definition of alternates).
+
+#### Scope-Occurences:
+
+  (w/r/t) identifiers in PLs
+
+  __*free*__ occurrence    => no matching binding
+
+  ```y = 5*x // x & y are free occurences (no type decl)```
+
+  __*binding*__ occurrence => declares identifier's type
+
+  ```int y; // y declared as int therefore binding```
+
+  __*bound*__ occurrence => follows matching binding occurrence
+
+  ```C
+  int y;    // Binding occurrence of y
+  int x;    // Binding occurrence of x
+
+  x=6;      // Bound occurrence of x
+  y = 5*x;  // Bound occurrences of x and y
+  ```
+
+---
 
   ```Scala
   "the rain in spain".tolist
@@ -511,12 +563,12 @@ public class refPass{
   evens.zip (odds)
   ```
 
+#### A:
+
   ```Scala
   // Alternates definition:
   val alternates: Stream[Boolean] = true #:: false #:: alternates
-  ```
 
-  ```Scala
   // with console OUTPUT
   scala> val alternates : Stream[Boolean] = true #:: false #:: alternates
   alternates: Stream[Boolean] = Stream(true, ?)
@@ -546,11 +598,27 @@ public class refPass{
 
   ```
 
-
+---
 
 ### Static and Dynamic Scope
 
-#### Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java. Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
+#### Scope-Static Scope (Lexical Scope):
+
+Identifiers (var names) bound to closest binding occurrence (var with type decl) __in an enclosing block of program code__
+
+#### Scope-Dyamic Scope:
+
+Identifiers (var names) bound to the binding occurrence in the closest AR
+
+Code that is not local to current block are not resolved (bound) until runtime
+
+
+
+---
+
+Design your own example to show the difference between static and dynamic scope. Try running it in Scala, Scheme, C, Java. Optionally, install the Perl interpreter and demonstrate that Perl uses dynamic scope for your example when you declare local variables using the local keyword.
+
+---
 
 #### __TOUGH__ Example 1: Consider the following Java program. Work out what will be printed when it runs. Verify your answer by compiling and running the program.
 
@@ -928,9 +996,7 @@ Q: Is it true that subtyping is a symmetric relation?
 
 ## Subtyping and variance in Scala
 
-#### 4.1 Covariant Lists:
-
- #### Q: verify that the *List* type is covariant in Scala by entering the following Scala program into the Scala REPL
+#### 4.1 Covariant Lists Q: verify that the *List* type is covariant in Scala by entering the following Scala program into the Scala REPL
 
   ```Scala
   class B { def f (x:Int) : Int             = 1
@@ -950,15 +1016,11 @@ Q: Is it true that subtyping is a symmetric relation?
 
 #### A:
 
-  #### Note: xs2 is a List of type C
+ Note: xs2 is a List of type C
+ Note: xs4 is a List of type B
+ because Lists are covariant in Scala, xs4 can take in C values
 
-  #### Note: xs4 is a List of type B
-
-  #### because Lists are covariant in Scala, xs4 can take in C values
-
-#### 4.2 Invariant Arrays:
-
- #### Q: Verify that the Array type is invariant in Scala by entering the following Scala program into the Scala REPL.
+#### 4.2 Invariant Arrays Q: Verify that the Array type is invariant in Scala by entering the following Scala program into the Scala REPL.
 
   ```Scala
   class B {
@@ -980,10 +1042,9 @@ Q: Is it true that subtyping is a symmetric relation?
 
 #### A: val xs4:Array[B] = xs2 is illegal because B is not a subtype of C and arrays in Scala are invariant
 
-
 ### Nested Classes:
 
-  * rewrite program to use anonymous inner classes:
+rewrite Java program to use anonymous inner classes:
 
 ```Java
 // QUESTION:
@@ -1041,6 +1102,8 @@ public class Threads1 {
   }
 }
 ```
+
+#### Threads A:
 
 ```Java
 // ANSWER:
@@ -1166,8 +1229,6 @@ public class Nested {
 ```
 
 #### Scala Nested Classes - Q:
-
-TODO: FORMAT
 
 Scala allows class declarations and object declarations. Classes, objects, and functions/methods can be nested arbitrarily.
 
